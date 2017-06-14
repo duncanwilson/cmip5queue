@@ -1,0 +1,50 @@
+from celery.task import task
+from dockertask import docker_task
+from subprocess import call,STDOUT
+from shutil import copyfile, move
+import requests
+import os
+import json as jsonx
+
+#Default base directory 
+basedir="/data/static_web"
+
+@task()
+def cmip5_ncrcat(args):
+    """
+        Runs an R script to process CMIP5 data
+        args: run parameters saved as a text file in json format
+              The run parameters will be read into R as part of the R script
+    """
+    task_id = str(runRscript_file.request.id)
+    user_id = args['user_id']
+    resultDir = setup_result_directory(user_id, task_id)
+    with open(resultDir + '/input/runargs.json', "w") as f:
+        jsonx.dump(args,f)
+    #Run R Script
+    r_return = subprocess.call("Rscript --vanilla /sccsc/cmip5_ncrcat.R {0} {1}".format(task_id, user_id), shell=True)
+    
+    #docker_opts = "-v /data/static_web/cmip5_tasks:/sccsc -v /data1:/data1:ro -v /data2:/data2:ro -v /data4:/data4:ro -w /sccsc"
+    #docker_cmd ="Rscript /sccsc/script/cmip5_ncrcat.R {0} {1}".format(user_id, task_id)
+    #result = docker_task(docker_name="sccsc/r",docker_opts=docker_opts,docker_command=docker_cmd,id=task_id)
+    
+    # read in R flags (written by R as part of run)
+    with open(resultDir + '/flags.json') as json_flags:
+        flags = jsonx.load(json_flags)
+    final_pass = flags['final_result']
+    if final_pass = 'false':
+        result_msg = 'PASS: There were no error flags in the run'
+    if final_pass = 'true':
+        result_msg = 'FAIL: There appeared to be an error in the run. Check xxx.log for details.'
+    return {"pass_result ": result_msg,
+            "result_url":"http://{0}/cmip5_tasks/{1}/{2}".format("climatedata.oscer.ou.edu",user_id,task_id)}
+            	
+def setup_result_directory(user_id, task_id):
+    resultDir = os.path.join(basedir, 'cmip5_tasks/', user_id, task_id)
+    os.makedirs(resultDir)
+    os.chmod(resultDir,0777)
+    os.makedirs("{0}/input".format(resultDir))
+    os.chmod("{0}/input".format(resultDir),0777)
+    os.makedirs("{0}/output".format(resultDir))
+    os.chmod("{0}/output".format(resultDir),0777)
+    return resultDir 
