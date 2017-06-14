@@ -32,10 +32,10 @@ def cmip5_ncrcat(args):
     with open(resultDir + '/flags.json') as json_flags:
         flags = jsonx.load(json_flags)
     final_pass = flags['final_result']
-    if final_pass = 'false':
-        result_msg = 'PASS: There were no error flags in the run'
-    if final_pass = 'true':
+    if final_pass:
         result_msg = 'FAIL: There appeared to be an error in the run. Check xxx.log for details.'
+    else:
+        result_msg = 'PASS: There were no error flags in the run'    
     return {"pass_result ": result_msg,
             "result_url":"http://{0}/cmip5_tasks/{1}/{2}".format("climatedata.oscer.ou.edu",user_id,task_id)}
             	
