@@ -22,7 +22,7 @@ def cmip5_ncrcat(args):
     with open(resultDir + '/input/runargs.json', "w") as f:
         jsonx.dump(args,f)
     #Run R Script
-    r_return = subprocess.call("Rscript --vanilla /sccsc/cmip5_ncrcat.R {0} {1}".format(task_id, user_id), shell=True)
+    r_return = subprocess.call("Rscript --vanilla /sccsc/cmip5_ncrcat.R {0} {1}".format(user_id, task_id), shell=True)
     
     #docker_opts = "-v /data/static_web/cmip5_tasks:/sccsc -v /data1:/data1:ro -v /data2:/data2:ro -v /data4:/data4:ro -w /sccsc"
     #docker_cmd ="Rscript /sccsc/script/cmip5_ncrcat.R {0} {1}".format(user_id, task_id)
