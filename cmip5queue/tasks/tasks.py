@@ -17,7 +17,7 @@ def cmip5_ncrcat(args):
         args: run parameters saved as a text file in json format
               The run parameters will be read into R as part of the R script
     """
-    task_id = str(runRscript_file.request.id)
+    task_id = str(cmip5_ncrcat.request.id)
     user_id = args['user_id']
     resultDir = setup_result_directory(user_id, task_id)
     with open(resultDir + '/input/runargs.json', "w") as f:
