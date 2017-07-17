@@ -12,6 +12,7 @@ basedir="/data/static_web"
 @task()
 def cmip5_ncrcat(args):
     """
+        AVAILABLE ON "SLOW" QUEUE ONLY
         Runs an R script to process CMIP5 data
         args: run parameters saved as a text file in json format
               The run parameters will be read into R as part of the R script
@@ -33,7 +34,7 @@ def cmip5_ncrcat(args):
         flags = jsonx.load(json_flags)
     final_pass = flags['final_result']
     if final_pass:
-        result_msg = 'FAIL: There appeared to be an error in the run. Check xxx.log for details.'
+        result_msg = 'FAIL: There appeared to be an error in the run. Check error_flags.log for details.'
     else:
         result_msg = 'PASS: There were no error flags in the run'    
     return {"pass_result ": result_msg,
