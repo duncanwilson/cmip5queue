@@ -18,7 +18,7 @@ def cmip5_ncrcat(args):
               The run parameters will be read into R as part of the R script
     """
     task_id = str(cmip5_ncrcat.request.id)
-    user_id = args['user']
+    user_id = args['user_name']
     resultDir = setup_result_directory(user_id, task_id)
     with open(resultDir + '/input/runargs.json', "w") as f:
         jsonx.dump(args,f)
