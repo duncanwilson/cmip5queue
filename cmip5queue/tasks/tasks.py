@@ -6,9 +6,6 @@ import requests
 import os
 import json as jsonx
 
-#Default base directory 
-basedir="/data/static_web"
-
 @task()
 def cmip5_ncrcat(args):
     """
@@ -25,10 +22,6 @@ def cmip5_ncrcat(args):
     #Run R Script
     r_return = subprocess.call("Rscript --vanilla /sccsc/cmip5_ncrcat.R {0} {1}".format(user_id, task_id), shell=True)
     
-    #docker_opts = "-v /data/static_web/cmip5_tasks:/sccsc -v /data1:/data1:ro -v /data2:/data2:ro -v /data4:/data4:ro -w /sccsc"
-    #docker_cmd ="Rscript /sccsc/script/cmip5_ncrcat.R {0} {1}".format(user_id, task_id)
-    #result = docker_task(docker_name="sccsc/r",docker_opts=docker_opts,docker_command=docker_cmd,id=task_id)
-    
     # read in R flags (written by R as part of run)
     with open(resultDir + '/flags.json') as json_flags:
         flags = jsonx.load(json_flags)
@@ -41,7 +34,7 @@ def cmip5_ncrcat(args):
             "result_url":"http://{0}/cmip5_tasks/{1}/{2}".format("climatedata.oscer.ou.edu",user_id,task_id)}
             	
 def setup_result_directory(user_id, task_id):
-    resultDir = os.path.join(basedir, 'cmip5_tasks/', user_id, task_id)
+    resultDir = os.path.join('/home/celery/', user_id, task_id)
     os.makedirs(resultDir)
     os.chmod(resultDir,0777)
     os.makedirs("{0}/input".format(resultDir))
