@@ -22,8 +22,8 @@ def cmip5_ncrcat(args):
     #Run R Script
     command = 'Rscript'
     path2script = '/sccsc/cmip5_ncrcat.R'
-    args = [user_id, task_id]
-    cmd = [command, '--vanilla', path2script] + args
+    pass_args = [user_id, task_id]
+    cmd = [command, '--vanilla', path2script] + pass_args
     subprocess.call(cmd)
     # check_output will run the command and store to result
     # e.g., print('Cat output:', r_return)
