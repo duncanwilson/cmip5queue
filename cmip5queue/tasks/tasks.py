@@ -1,6 +1,6 @@
 from celery.task import task
 from dockertask import docker_task
-from subprocess import call,STDOUT
+import subprocess
 from shutil import copyfile, move
 import requests
 import os
@@ -20,10 +20,18 @@ def cmip5_ncrcat(args):
     with open(resultDir + '/input/runargs.json', "w") as f:
         jsonx.dump(args,f)
     #Run R Script
-    r_return = subprocess.call("Rscript --vanilla /sccsc/cmip5_ncrcat.R {0} {1}".format(user_id, task_id), shell=True)
+    command = 'Rscript'
+    path2script = '/sccsc/cmip5_ncrcat.R'
+    args = [user_id, task_id]
+    cmd = [command, '--vanilla', path2script] + args
+    subprocess.call(cmd)
+    # check_output will run the command and store to result
+    # e.g., print('Cat output:', r_return)
+    #r_return = subprocess.check_output(cmd, universal_newlines=True)
+    #r_return = subprocess.call("Rscript --vanilla /sccsc/cmip5_ncrcat.R {0} {1}".format(user_id, task_id), shell=True)
     
     # read in R flags (written by R as part of run)
-    with open(resultDir + '/flags.json') as json_flags:
+    with open(resultDir + '/error_flags.json') as json_flags:
         flags = jsonx.load(json_flags)
     final_pass = flags['final_result']
     if final_pass:
