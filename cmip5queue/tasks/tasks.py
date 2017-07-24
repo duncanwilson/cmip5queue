@@ -1,5 +1,4 @@
 from celery.task import task
-from dockertask import docker_task
 import subprocess
 from shutil import copyfile, move
 import requests
@@ -25,19 +24,14 @@ def cmip5_ncrcat(args):
     pass_args = [user_id, task_id]
     cmd = [command, '--vanilla', path2script] + pass_args
     subprocess.call(cmd)
-    # check_output will run the command and store to result
-    # e.g., print('Cat output:', r_return)
-    #r_return = subprocess.check_output(cmd, universal_newlines=True)
-    #r_return = subprocess.call("Rscript --vanilla /sccsc/cmip5_ncrcat.R {0} {1}".format(user_id, task_id), shell=True)
-    
-    # read in R flags (written by R as part of run)
+    # read in R error flags (written by R as part of run)
     with open(resultDir + '/error_flags.json') as json_flags:
         flags = jsonx.load(json_flags)
     final_pass = flags['final_result']
-    if final_pass:
+    if final_pass==TRUE:
         result_msg = 'FAIL: There appeared to be an error in the run. Check error_flags.log for details.'
     else:
-        result_msg = 'PASS: There were no error flags in the run'    
+        result_msg = 'SUCCESS: No error flags in the run'    
     return {"pass_result ": result_msg,
             "result_url":"http://{0}/cmip5_tasks/{1}/{2}".format("climatedata.oscer.ou.edu",user_id,task_id)}
             	
