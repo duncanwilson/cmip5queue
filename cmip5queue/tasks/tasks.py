@@ -28,7 +28,7 @@ def cmip5_ncrcat(args):
     with open(resultDir + '/error_flags.json') as json_flags:
         flags = jsonx.load(json_flags)
     final_pass = flags['final_result']
-    if final_pass==True:
+    if final_pass:
         result_msg = 'FAIL: There appeared to be an error in the run. Check error_flags.log for details.'
     else:
         result_msg = 'SUCCESS: No error flags in the run'    
